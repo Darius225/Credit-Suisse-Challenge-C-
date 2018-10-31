@@ -158,10 +158,6 @@
         {
             return 2 * indexRep + 2;
         }
-        public void displayHeap()
-        {
-            displayNode(0);
-        }
-       
+   
     }
 }
