@@ -8,4 +8,17 @@
             return -1;
         }
     }
+    public class Heap
+    {
+        ArrayList<int> representation;
+        public Heap()
+        {
+            representation = new ArrayList<int>();
+        }
+        public void insert(int val)
+        {
+            representation.add(val);
+            int index = representation.Size();
+        }
+    }
 }
