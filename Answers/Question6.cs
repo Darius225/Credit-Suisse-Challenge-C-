@@ -1,23 +1,25 @@
-﻿using System;
-namespace C_Sharp_Challenge_Skeleton.Answers
+﻿namespace C_Sharp_Challenge_Skeleton.Answers
 {
     public class Question6
     {
 
         public static int Answer(int numOfServers, int targetServer, int[,] connectionTimeMatrix)
         {
-            int counter = 0;
             int n = connectionTimeMatrix.GetLength(0);
             int[] bestDistances = new int[n];
             for (int i = 0; i < n; i++)
             {
                 bestDistances[i] = connectionTimeMatrix[0, targetServer];
             }
+            if (targetServer == 0)
+            {
+                return 0;
+            }
             Heap paths = new Heap(numOfServers);
             paths.insert(0, 0);
             paths.displayHeap();
             paths.displayServerIndexes();
-            int ans = 0;
+            int ans = bestDistances[targetServer];
             bestDistances[0] = 0;
             while (!paths.isEmpty())
             {
@@ -36,7 +38,7 @@ namespace C_Sharp_Challenge_Skeleton.Answers
                         paths.displayServerIndexes();
                     }
                 }
-                counter++;
+
             }
             return ans;
         }
@@ -143,8 +145,8 @@ namespace C_Sharp_Challenge_Skeleton.Answers
         {
             swapValues(representationIndexes, repIndex1, repIndex2);
             swapValues(values, repIndex1, repIndex2);
-            serverIndexes[representationIndexes[repIndex1]] = repIndex2;
-            serverIndexes[representationIndexes[repIndex2]] = repIndex1;
+            serverIndexes[representationIndexes[repIndex1]] = repIndex1;
+            serverIndexes[representationIndexes[repIndex2]] = repIndex2;
         }
         public int getParent(int indexRep)
         {
@@ -162,27 +164,6 @@ namespace C_Sharp_Challenge_Skeleton.Answers
         {
             displayNode(0);
         }
-        public void displayNode(int index)
-        {
-            Console.WriteLine("Node is " + index);
-            Console.WriteLine("Value is " + values[index]);
-            Console.WriteLine("Representation index is " + representationIndexes[index]);
-            if (leftChild(index) < filled)
-            {
-                displayNode(leftChild(index));
-            }
-            if (rightChild(index) < filled)
-            {
-                displayNode(rightChild(index));
-            }
-        }
-        public void displayServerIndexes()
-        {
-            int n = values.GetLength(0);
-            for (int i = 0; i < n; i++)
-            {
-                Console.WriteLine("For server number " + i + " the index in the heap is: " + serverIndexes[i]);
-            }
-        }
+       
     }
 }
