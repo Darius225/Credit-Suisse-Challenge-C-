@@ -1,59 +1,79 @@
-﻿using System.Collections.Generic;
-
-namespace C_Sharp_Challenge_Skeleton.Answers
+﻿namespace C_Sharp_Challenge_Skeleton.Answers
 {
     public class Question2
     {
-        static HashSet<int> sumsObtainedWithA = new HashSet<int>();
-        static HashSet<int> sumsObtainedWithB = new HashSet<int>();
-        private const int upBound = 10000;
         public unsafe static int Answer(int[] cashflowIn, int[] cashflowOut)
         {
-
-            sumsObtainedWithA = flowSums(cashflowIn);
-            sumsObtainedWithB = flowSums(cashflowOut);
             int ans = 99;
-            ans = findAnswer(sumsObtainedWithA, sumsObtainedWithB, ans);
+            bool[] aSums = ObtainableSums(cashflowIn);
+            bool[] bSums = ObtainableSums(cashflowOut);
+            ans = checkDifference(aSums, bSums, ans);
+            ans = checkDifference(bSums, aSums, ans);
             return ans;
-
         }
-        private static unsafe HashSet<int> flowSums(int[] flows)
+        private unsafe static int min(int a, int b)
         {
-            HashSet<int> sums = new HashSet<int>();
-            int n = flows.Length;
-            sums.Add(0);
-            for (int i = 0; i < n; i++)
+            if (a < b)
             {
-                HashSet<int> newSums = new HashSet<int>();
-                foreach (int sum in sums)
-                {
-                    int newSum = sum + flows[i];
-                    if (newSum <= upBound)
-                    {
-                        newSums.Add(newSum);
-                    }
-                }
-                sums.UnionWith(newSums);
+                return a;
             }
-            return sums;
+            return b;
         }
-        private static unsafe int findAnswer(HashSet<int> firstSet, HashSet<int> secondSet, int ansSoFar)
+        private unsafe static int checkDifference(bool[] firstSums, bool[] secondSums, int ans)
         {
-            for (int i = 1; i <= upBound; i++)
+            int firstSum = firstSums.Length;
+            int secondSum = secondSums.Length;
+            for (int i = 1; i <= min(firstSum, secondSum) - 1; i++)
             {
-                if (firstSet.Contains(i))
+                if (firstSums[i] == true)
                 {
-                    for (int j = 0; j < ansSoFar; j++)
+                    for (int j = 0; j < ans && j <= i; j++)
                     {
-                        if (secondSet.Contains(i - j))
+                        if (secondSums[i - j] == true)
                         {
-                            ansSoFar = j;
-                            break;
+                            ans = j;
                         }
                     }
                 }
             }
-            return ansSoFar;
+            return ans;
+        }
+        private unsafe static bool[] ObtainableSums(int[] flows)
+        {
+            int n = flows.Length;
+            int totalSum = Sum(flows);
+            bool[,] obtainableSums = new bool[2, totalSum + 1];
+            obtainableSums[0, 0] = true;
+            obtainableSums[1, 0] = true;
+            int ind = 1;
+            for (int j = 0; j < n; j++)
+            {
+                for (int i = 0; i <= totalSum; i++)
+                {
+                    if (i + flows[j] <= totalSum)
+                    {
+                        obtainableSums[ind, i + flows[j]] |= obtainableSums[1 - ind, i];
+                    }
+                    obtainableSums[ind, i] |= obtainableSums[1 - ind, i];
+                }
+                ind = 1 - ind;
+            }
+            bool[] lastRow = new bool[totalSum + 1];
+            for (int i = 0; i <= totalSum; i++)
+            {
+                lastRow[i] = obtainableSums[1 - ind, i];
+            }
+            return lastRow;
+        }
+        private unsafe static int Sum(int[] flows)
+        {
+            int sum = 0;
+            int n = flows.Length;
+            for (int i = 0; i < n; i++)
+            {
+                sum += flows[i];
+            }
+            return sum;
         }
     }
 }
