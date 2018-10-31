@@ -17,8 +17,7 @@
             }
             Heap paths = new Heap(numOfServers);
             paths.insert(0, 0);
-            paths.displayHeap();
-            paths.displayServerIndexes();
+       
             int ans = bestDistances[targetServer];
             bestDistances[0] = 0;
             while (!paths.isEmpty())
@@ -34,8 +33,7 @@
                     {
                         bestDistances[i] = pair[0] + connectionTimeMatrix[pair[1], i];
                         paths.insert(i, pair[0] + connectionTimeMatrix[pair[1], i]);
-                        paths.displayHeap();
-                        paths.displayServerIndexes();
+                     
                     }
                 }
 
